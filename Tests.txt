@@ -1,0 +1,14 @@
+1) Multiple File Acceptance.
+returns correct numbers of file
+
+2) File size limitation of 200 MB
+returns error if file size exceeds 200 MB
+
+3) Maximum 5 files acceptance
+returns error if files are more than 5
+
+4) Null or Empty File
+returns error that file might be empty
+
+5) No patterns found
+returns no pattern found
