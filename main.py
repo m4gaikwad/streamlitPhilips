@@ -3,15 +3,15 @@ import streamlit as st
 from random import randint
 import time
 
-# Import CDF Parser and Pattern Generator
+# Import CDF Parser, Pattern Generator and Download
 from cdf_ops.cdf_parser import CdfToDf
 from cdf_ops.pattern_generator import PatternFinder
 
+#Import file with method to download structured cdf files
+from cdf_ops.download import structured_cdf
+
 # Configuration file to populate error and keywords
 import configparser
-
-# File Download
-import base64
 
 # Global Variables for CDF Parser and Pattern Generator
 parser = CdfToDf()
@@ -25,20 +25,10 @@ Page_Config = {'page_title': 'C-ARM Log Analysis',
 st.set_page_config(**Page_Config)
 
 
-def download_dataframe(dataframe):
-    data = dataframe.to_csv()
-    b64 = base64.b64encode(data.encode()).decode()
-    timestr = time.strftime("%Y%m%d-%H%M%S")
-    new_filename = "Structured_CDF_File_{}_.csv".format(timestr)
-    st.markdown("#### Download  Structured CDF File ###")
-    href = f'<a href="data:file/csv;base64,{b64}" download="{new_filename}"> ⏬ Download ⏬ </a>'
-    st.markdown(href, unsafe_allow_html=True)
-
-
 def home():
     state = st.session_state  # Create a local session for Pattern Generation
 
-    st.title('Philips C-Arm Log Analysis')
+    st.title('Philips C-Arm Log Analysis')  # Project Title
 
     # Specific Unique Key for Uploaded File / Files
     if 'FILE_UPLOADER_KEY' not in state:
@@ -77,14 +67,15 @@ def home():
 
             if df is not None:  # Check dataframe is empty or not
                 try:
-                    st.subheader('Structured CDF File')
-                    st.dataframe(df)
-                    download_dataframe(df)
+                    #st.subheader('Structured CDF File')
+                    #st.dataframe(df)
+                    structured_cdf(df)
 
                     patterns = pattern.find_patterns(df, value)  # Call pattern generator and return pattern
                     if patterns is not None:
                         st.subheader('Pattern For {}', error)
                         st.dataframe(patterns)  # Display Patterns
+                        #structured_cdf(pd.DataFrame.from_dict(patterns))
 
                     else:
                         st.warning('Selected Patterns Not Found.')

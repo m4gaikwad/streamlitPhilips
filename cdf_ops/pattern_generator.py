@@ -31,7 +31,7 @@ class PatternFinder():
 
     def get_rows_by_error(self,df,error,n_rows=10):
         appended_data = []
-        indexes = df[df['Description_clean'].str.contains(error)].index
+        indexes = df[df['Description_clean'].str.contains(pat=error, regex=False)].index
         #st.write(indexes)
 
         for idx in indexes:
