@@ -2,10 +2,13 @@
 import streamlit as st
 from random import randint
 import time
-
+import json
 # Import CDF Parser and Pattern Generator
 from cdf_ops.cdf_parser import CdfToDf
 from cdf_ops.pattern_generator import PatternFinder
+
+#Configuration file to populate error and keywords
+import configparser
 
 #Global Variables for CDF Parser and Pattern Generator
 parser = CdfToDf()
@@ -36,15 +39,22 @@ def home():
         state.FILE_UPLOADER_KEY = str(randint(1000, 9999))  # Reinitialize Uploaded File Unique Key
         st.experimental_rerun()  # Restart Execution
 
+    #Configuration File with Errors and Keywords
+    config = configparser.ConfigParser()
+    config.read('keywords.ini')
+
     # Select Errors One at a Time
-    error = st.sidebar.selectbox('Select Errors', ['X_ray Generator', 'Hot Tank Oil'])
+    menu = list(config['keywords'].keys())
+    error = st.sidebar.selectbox('Select Errors', menu)
+    value = config.get('keywords', error)
+
+    #Submit Selection
     submit = st.button('Submit')
-    #print(data)
 
     if submit:
         if len(data) != 0:  # Check if data is not null
             df = parser.convert_all(data)  # Call cdf parser and return dataframe
-            patterns = pattern.find_patterns(df, error=error)  # Call pattern generator and return pattern
+            patterns = pattern.find_patterns(df, error=value)  # Call pattern generator and return pattern
 
             if patterns is None:
                 st.info('Selected Patterns Found.')
