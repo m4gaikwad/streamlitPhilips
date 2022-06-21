@@ -1,3 +1,4 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
 from collections import defaultdict
@@ -13,16 +14,20 @@ class PatternFinder():
         return text
 
     def preprocess_data(self,full_df):
-        full_df.drop_duplicates()
-        stand_df = full_df[['TimeStamp','TimeFraction','Unit','EventCategory','Description','FileName','Version','ProductID','SerialNumber']]
-        stand_df["Cause"] = np.nan
-        stand_df["Solution"] = np.nan
-        stand_df['Description_clean'] = stand_df['Description'].apply(lambda x : self.cleaned_text(x))
-        
-        exclusion_list = ["OsaErrorCallback: Error","MergeCOM Error"]
-        for term in exclusion_list:
-            stand_df = stand_df[stand_df["Description_clean"].str.contains(term.lower())==False]        
-        return stand_df
+        try:
+            full_df.drop_duplicates()
+            stand_df = full_df[['TimeStamp','TimeFraction','Unit','EventCategory','Description','FileName','Version','ProductID','SerialNumber']]
+            stand_df["Cause"] = np.nan
+            stand_df["Solution"] = np.nan
+            stand_df['Description_clean'] = stand_df['Description'].apply(lambda x : self.cleaned_text(x))
+
+            exclusion_list = ["OsaErrorCallback: Error","MergeCOM Error"]
+
+            for term in exclusion_list:
+                stand_df = stand_df[stand_df["Description_clean"].str.contains(term.lower())==False]
+            return stand_df
+        except (st.StreamlitAPIException):
+            return None
 
     def get_rows_by_error(self,df,error,n_rows=10):
         appended_data = []
@@ -64,10 +69,13 @@ class PatternFinder():
     
     def find_patterns(self,df,error=None):
         stand_df = self.preprocess_data(df)
-        if not error:
-            error = "no x-ray after switch on"
+        if stand_df is not None:
+            if not error:
+                error = "no x-ray after switch on"
 
-        dose_df = self.get_rows_by_error(stand_df,error) # segment
-        dose_time_df = self.sort_by_time(dose_df) # confirmation
-        dose_rslt_df = self.filter_by_component(dose_time_df)
-        return self.get_patterns(dose_rslt_df)
+            dose_df = self.get_rows_by_error(stand_df,error) # segment
+            dose_time_df = self.sort_by_time(dose_df) # confirmation
+            dose_rslt_df = self.filter_by_component(dose_time_df)
+            return self.get_patterns(dose_rslt_df)
+        else:
+            return None
