@@ -1,4 +1,3 @@
-
 import streamlit as st
 from random import randint
 import time
@@ -57,7 +56,7 @@ def home():
             patterns = pattern.find_patterns(df, error=value)  # Call pattern generator and return pattern
 
             if patterns is None:
-                st.info('Selected Patterns Found.')
+                st.info('Selected Patterns Not Found.')
             else:
                 st.dataframe(patterns)  # Display Patterns
         else:
