@@ -47,18 +47,32 @@ def home():
     error = st.sidebar.selectbox('Select Errors', menu)
     value = config.get('keywords', error)
 
+    #print(value)
+
     #Submit Selection
     submit = st.button('Submit')
 
     if submit:
         if len(data) != 0:  # Check if data is not null
-            df = parser.convert_all(data)  # Call cdf parser and return dataframe
-            patterns = pattern.find_patterns(df, error=value)  # Call pattern generator and return pattern
+            df = parser.convert_all(data) # Call cdf parser and return dataframe
 
-            if patterns is None:
-                st.info('Selected Patterns Not Found.')
+            if df is not None:      # Check dataframe is empty or not
+                try:
+                    st.subheader('Structured CDF File')
+                    st.dataframe(df)
+
+                    patterns = pattern.find_patterns(df, error=value)  # Call pattern generator and return pattern
+                    if patterns is not None:
+                        st.subheader('Pattern For {}', error)
+                        st.dataframe(patterns)  # Display Patterns
+
+                    else:
+                        st.warning('Selected Patterns Not Found.')
+                except:
+                    st.write(' ')
             else:
-                st.dataframe(patterns)  # Display Patterns
+                st.write(' ')
+
         else:
             st.error('Please Upload Required Files.')
 
