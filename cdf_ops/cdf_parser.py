@@ -1,10 +1,8 @@
 import streamlit as st
-import os
+
 import xml.etree.cElementTree as et
 import pandas as pd
-from datetime import datetime
-import glob
-import time
+
 import xml.etree.ElementTree as ET
 import logging
 from .structure_data import (
@@ -98,48 +96,54 @@ class CdfToDf:
         # parsing all the log files to get structured data
         for filename in filenames:
             #if os.path.getsize(filename.name) > 0:
-                if not filename.name.split('/')[-1].startswith("Daily"):
-                    self.logger.warning(f" Skipping: {filename.name.split('/')[-1]}")
-                    continue
+            file = filename.read()
+            #file1_data = json.loads(json.dumps(xmltodict.parse(file)))
+            #st.write(file1_data)
 
-                self.logger.warning(f" Parsing: {filename.name.split('/')[-1]}")
-                if filename.name.split('/')[-1] in done_files:
-                    self.logger.warning(f" Skipping: {filename.name.split('/')[-1]}")
-                    continue
-                else:
-                    done_files.append(filename.name.split('/')[-1])
-                try:
-                    tree = ET.parse(filename)
-                    root = tree.getroot()
-                    for child in root:
-                        if child.tag == "SystemConfiguration":
-                            product_id = child.attrib.get('ProductID')
-                            serial_number = child.attrib.get('SerialNumber')
-                            for inner_child in child:
-                                if inner_child.tag == "SoftwareVersion":
-                                    version = get_version_from_meta(inner_child.attrib)
-                        if child.tag == "Event":
-                            data.update(child.attrib)
-                            for inner_child in child:
-                                if inner_child.tag == "EventOriginatorInfo":
-                                    data.update(inner_child.attrib)
-                                if inner_child.tag == "EventInfo":
-                                    data.update(inner_child.attrib)
-                                    for additional in inner_child:
-                                        data.update(additional.attrib)
-                        else:
-                            continue
-                        data.update({"FileName": filename.name.split('/')[-1]})
-                        data.update({"Version": version})
-                        data.update({"ProductID": product_id})
-                        data.update({"SerialNumber": serial_number})
-                        # serial_number
-                        final_data.append(data)
-                        data = {}
-                        counter += 1
-                except ET.ParseError:
-                    return st.error(f'{filename.name} might be empty')
+            if not filename.name.split('/')[-1].startswith("Daily"):
+                self.logger.warning(f" Skipping: {filename.name.split('/')[-1]}")
+                continue
 
+            self.logger.warning(f" Parsing: {filename.name.split('/')[-1]}")
+            if filename.name.split('/')[-1] in done_files:
+                self.logger.warning(f" Skipping: {filename.name.split('/')[-1]}")
+                continue
+            else:
+                done_files.append(filename.name.split('/')[-1])
+            try:
+                #tree = ET.parse(filename)
+                root = ET.fromstring(file)
+                #root = tree.getroot()
+                for child in root:
+                    if child.tag == "SystemConfiguration":
+                        product_id = child.attrib.get('ProductID')
+                        serial_number = child.attrib.get('SerialNumber')
+                        for inner_child in child:
+                            if inner_child.tag == "SoftwareVersion":
+                                version = get_version_from_meta(inner_child.attrib)
+                    if child.tag == "Event":
+                        data.update(child.attrib)
+                        for inner_child in child:
+                            if inner_child.tag == "EventOriginatorInfo":
+                                data.update(inner_child.attrib)
+                            if inner_child.tag == "EventInfo":
+                                data.update(inner_child.attrib)
+                                for additional in inner_child:
+                                    data.update(additional.attrib)
+                    else:
+                        continue
+                    data.update({"FileName": filename.name.split('/')[-1]})
+                    data.update({"Version": version})
+                    data.update({"ProductID": product_id})
+                    data.update({"SerialNumber": serial_number})
+                    # serial_number
+                    final_data.append(data)
+                    data = {}
+                    counter += 1
+            except ET.ParseError:
+                return st.error(f'{filename.name} might be empty')
+
+        #st.write(final_data)
             #else:
                 #st.error(f'{filename.name} is empty.')
 
