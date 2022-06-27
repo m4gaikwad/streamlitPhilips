@@ -32,11 +32,13 @@ class PatternFinder():
     def get_rows_by_error(self,df,error,n_rows=10):
         appended_data = []
         indexes = df[df['Description_clean'].str.contains(error)].index
-        #print(indexes)
+        #st.write(indexes)
+
         for idx in indexes:
             part_df = df.iloc[(max(df.index.get_loc(idx)-n_rows,0)):min(df.index.get_loc(idx)+n_rows,len(df))]
             #print(part_df)
             appended_data.append(part_df)
+
         if appended_data:
             appended_data = pd.concat(appended_data)
             appended_data=appended_data.groupby(appended_data.index).first()
@@ -71,15 +73,15 @@ class PatternFinder():
         except:
             return None
     
-    def find_patterns(self,df,error=None):
+    def find_patterns(self,df,error):
         stand_df = self.preprocess_data(df)
         if stand_df is not None:
             if not error:
                 error = "no x-ray after switch on"
-            dose_df = self.get_rows_by_error(stand_df,error) # segment
+            dose_df = self.get_rows_by_error(stand_df,error)  # segment
 
             if dose_df is not None:
-                dose_time_df = self.sort_by_time(dose_df) # confirmation
+                dose_time_df = self.sort_by_time(dose_df)  # confirmation
                 dose_rslt_df = self.filter_by_component(dose_time_df)
                 return self.get_patterns(dose_rslt_df)
             else:
