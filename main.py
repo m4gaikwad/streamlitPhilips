@@ -28,7 +28,7 @@ st.set_page_config(**Page_Config)
 def home():
     state = st.session_state  # Create a local session for Pattern Generation
 
-    st.title('Philips C-Arm Log Analysis')  # Project Title
+    st.title('Philips C-Arm Log Pattern Generator')  # Project Title
 
     # Specific Unique Key for Uploaded File / Files
     if 'FILE_UPLOADER_KEY' not in state:
