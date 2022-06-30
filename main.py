@@ -95,7 +95,7 @@ def home():
         else:
             st.error('Please Upload Required Files.')
 
-    path = st.text_input('Type Path')
+    path = st.text_input('Type Complete Path till Test1 Directory')
 
     selected_folders = ds.directory(path)
 
