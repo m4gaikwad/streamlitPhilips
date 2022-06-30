@@ -12,11 +12,11 @@ def extract_zip(path, folders):
     if len(folders) != 0:
         if st.button('Extract'):
             for folder in folders:
-                pf = path + '\\' + folder
+                pf = path + '\\' + folder    # change '\\' to '/' in Linux or MacOS
                 complete_path.append(pf)
 
             for cp in complete_path:
-                filename = glob.glob(cp + '\\*')
+                filename = glob.glob(cp + '\\*') #Change '\\' to '/' in Linux or MacOS
                 filenames.append(filename)
             #st.write(filenames)
 
