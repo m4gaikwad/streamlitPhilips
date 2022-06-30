@@ -10,6 +10,8 @@ from cdf_ops.pattern_generator import PatternFinder
 #Import file with method to download structured cdf files
 from cdf_ops.download import structured_cdf
 
+import directory_select as ds
+import extraction as ext
 # Configuration file to populate error and keywords
 import configparser
 
@@ -25,7 +27,9 @@ Page_Config = {'page_title': 'C-ARM Log Analysis',
 st.set_page_config(**Page_Config)
 
 
+
 def home():
+    selected_folders = []
     state = st.session_state  # Create a local session for Pattern Generation
 
     st.title('Philips C-Arm Log Pattern Generator')  # Project Title
@@ -41,11 +45,11 @@ def home():
     data = st.file_uploader('', accept_multiple_files=True, type='cdf', key=state.FILE_UPLOADER_KEY)
 
     # Check if only 5 files are uploaded
-    if len(data) > MAX_FILES:
-        st.error('Only Five Files Can be Uploaded At A Time. Please Wait 10 Seconds To Reupload Files.')
-        time.sleep(10)  # Display Message for 5 seconds
-        state.FILE_UPLOADER_KEY = str(randint(1000, 9999))  # Reinitialize Uploaded File Unique Key
-        st.experimental_rerun()  # Restart Execution
+    # if len(data) > MAX_FILES:
+    #     st.error('Only Five Files Can be Uploaded At A Time. Please Wait 10 Seconds To Reupload Files.')
+    #     time.sleep(10)  # Display Message for 5 seconds
+    #     state.FILE_UPLOADER_KEY = str(randint(1000, 9999))  # Reinitialize Uploaded File Unique Key
+    #     st.experimental_rerun()  # Restart Execution
 
     # Configuration File with Errors and Keywords
     config = configparser.ConfigParser()
@@ -72,6 +76,7 @@ def home():
                     structured_cdf(df)
 
                     patterns = pattern.find_patterns(df, value)  # Call pattern generator and return pattern
+
                     if patterns is not None:
                         st.subheader('Pattern For {}', error)
                         st.dataframe(patterns)  # Display Patterns
@@ -90,6 +95,15 @@ def home():
 
         else:
             st.error('Please Upload Required Files.')
+
+    path = st.text_input('Type Path')
+
+    selected_folders = ds.directory(path)
+
+    try:
+        ext.extract_zip(path,selected_folders)
+    except:
+        st.write(' ')
 
 
 if __name__ == '__main__':
