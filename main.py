@@ -33,9 +33,9 @@ def home():
 
     st.title('Philips C-Arm Log Pattern Generator')  # Project Title
 
-    #Select Process
-    process = ['Directory','CSV']
-    select_menu = st.sidebar.selectbox('Select Step',process)
+    # Select Process
+    process = ['Directory', 'CSV']
+    select_menu = st.sidebar.selectbox('Select Step', process)
 
     # Configuration File with Errors and Keywords
     config = configparser.ConfigParser()
@@ -51,8 +51,6 @@ def home():
         if 'FILE_UPLOADER_KEY' not in state:
             state.FILE_UPLOADER_KEY = str(randint(1000, 9999))
 
-
-
         # st.markdown('## \U0001F4C2 Upload CDF files')
         st.markdown('## \U0001F5CE Upload CDF Files')
 
@@ -65,7 +63,6 @@ def home():
         #     time.sleep(10)  # Display Message for 5 seconds
         #     state.FILE_UPLOADER_KEY = str(randint(1000, 9999))  # Reinitialize Uploaded File Unique Key
         #     st.experimental_rerun()  # Restart Execution
-
 
         # print(value)
 
@@ -103,7 +100,8 @@ def home():
             else:
                 st.error('Please Upload Required Files.')
     elif select_menu == 'Directory':
-        # Select Directory Code
+        st.markdown('## Copy Paste The Root Folder Path')
+        # Select Directory
 
         path = st.text_input('Type Complete Path till Test1 Directory')
 
@@ -115,6 +113,7 @@ def home():
             st.write(' ')
     else:
         st.write(' ')
+
 
 if __name__ == '__main__':
     home()
