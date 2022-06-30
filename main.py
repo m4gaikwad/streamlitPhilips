@@ -67,8 +67,6 @@ def home():
         #     st.experimental_rerun()  # Restart Execution
 
 
-
-
         # print(value)
 
         # Submit Selection
