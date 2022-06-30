@@ -7,7 +7,7 @@ import time
 from cdf_ops.cdf_parser import CdfToDf
 from cdf_ops.pattern_generator import PatternFinder
 
-#Import file with method to download structured cdf files
+# Import file with method to download structured cdf files
 from cdf_ops.download import structured_cdf
 
 import directory_select as ds
@@ -25,7 +25,6 @@ Page_Config = {'page_title': 'C-ARM Log Analysis',
                }
 
 st.set_page_config(**Page_Config)
-
 
 
 def home():
@@ -71,8 +70,8 @@ def home():
 
             if df is not None:  # Check dataframe is empty or not
                 try:
-                    #st.subheader('Structured CDF File')
-                    #st.dataframe(df)
+                    # st.subheader('Structured CDF File')
+                    # st.dataframe(df)
                     structured_cdf(df)
 
                     patterns = pattern.find_patterns(df, value)  # Call pattern generator and return pattern
@@ -80,7 +79,7 @@ def home():
                     if patterns is not None:
                         st.subheader('Pattern For {}', error)
                         st.dataframe(patterns)  # Display Patterns
-                        #structured_cdf(pd.DataFrame.from_dict(patterns))
+                        # structured_cdf(pd.DataFrame.from_dict(patterns))
 
                     else:
                         st.warning('Selected Patterns Not Found.')
@@ -101,7 +100,7 @@ def home():
     selected_folders = ds.directory(path)
 
     try:
-        ext.extract_zip(path,selected_folders)
+        ext.extract_zip(path, selected_folders)
     except:
         st.write(' ')
 

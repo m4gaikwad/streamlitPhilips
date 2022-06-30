@@ -19,12 +19,15 @@ def extract_zip(path, folders):
                 filename = glob.glob(cp + '\\*') #Change '\\' to '/' in Linux or MacOS
                 filenames.append(filename)
             #st.write(filenames)
+            for item in filenames:
+                if extension in item[0]:
+                    zip_ref = zipfile.ZipFile(item[0])
+                    zip_ref.extractall(path)
+                    zip_ref.close()
 
-    for item in filenames:
-        if extension in item[0]:
-            zip_ref = zipfile.ZipFile(item[0])
-            zip_ref.extractall(path)
-            zip_ref.close()
+            st.write('Extraction Complete')
 
     else:
         st.write(' ')
+
+
