@@ -96,24 +96,24 @@ class CdfToDf:
         # parsing all the log files to get structured data
         for filename in filenames:
             #if os.path.getsize(filename.name) > 0:
-            file = filename.read()
+            #file = filename.read()
             #file1_data = json.loads(json.dumps(xmltodict.parse(file)))
             #st.write(file1_data)
 
-            if not filename.name.split('/')[-1].startswith("Daily"):
-                self.logger.warning(f" Skipping: {filename.name.split('/')[-1]}")
+            if not filename.split('\\')[-1].startswith("Daily"):
+                self.logger.warning(f" Skipping: {filename.split('/')[-1]}")
                 continue
 
-            self.logger.warning(f" Parsing: {filename.name.split('/')[-1]}")
-            if filename.name.split('/')[-1] in done_files:
-                self.logger.warning(f" Skipping: {filename.name.split('/')[-1]}")
+            self.logger.warning(f" Parsing: {filename.split('/')[-1]}")
+            if filename.split('\\')[-1] in done_files:
+                self.logger.warning(f" Skipping: {filename.split('/')[-1]}")
                 continue
             else:
-                done_files.append(filename.name.split('/')[-1])
+                done_files.append(filename.split('\\')[-1])
             try:
-                #tree = ET.parse(filename)
-                root = ET.fromstring(file)
-                #root = tree.getroot()
+                tree = ET.parse(filename)
+                #root = ET.fromstring(file)
+                root = tree.getroot()
                 for child in root:
                     if child.tag == "SystemConfiguration":
                         product_id = child.attrib.get('ProductID')
@@ -132,7 +132,7 @@ class CdfToDf:
                                     data.update(additional.attrib)
                     else:
                         continue
-                    data.update({"FileName": filename.name.split('/')[-1]})
+                    data.update({"FileName": filename.split('/')[-1]})
                     data.update({"Version": version})
                     data.update({"ProductID": product_id})
                     data.update({"SerialNumber": serial_number})
@@ -141,7 +141,7 @@ class CdfToDf:
                     data = {}
                     counter += 1
             except ET.ParseError:
-                return st.error(f'{filename.name} might be empty')
+                return st.error(f'{filename} might be empty')
 
         #st.write(final_data)
             #else:

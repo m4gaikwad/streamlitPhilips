@@ -3,7 +3,7 @@ import os, zipfile
 import streamlit as st
 import glob
 
-extension = '.zip'
+extension = "zip"
 
 
 def extract_zip(path, folders):
