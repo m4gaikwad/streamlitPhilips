@@ -120,7 +120,6 @@ def home():
             st.write(' ')
             flag = False
 
-
         # df = parser.convert_all(cdf_files)
         if flag == True and st.button('Show Pattern'):
             cdf_files = [os.path.join(path, f) for f in os.listdir(path) if f.endswith('.cdf')]
