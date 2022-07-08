@@ -79,7 +79,7 @@ def home():
     error = st.sidebar.selectbox('Select Errors', menu)
     value = config.get('keywords', error)
 
-    if select_menu == 'CSV':
+    if select_menu == 'CDF':
         # Specific Unique Key for Uploaded File / Files
         if 'FILE_UPLOADER_KEY' not in state:
             state.FILE_UPLOADER_KEY = str(randint(1000, 9999))
@@ -104,6 +104,7 @@ def home():
 
         if submit:
             show_pattern(data, error, value)
+
     elif select_menu == 'Directory':
         st.markdown('## Copy Paste The Root Folder Path')
         # Select Directory
@@ -115,13 +116,13 @@ def home():
 
         try:
             ext.extract_zip(path, selected_folders)
-            flag = True
+            #flag = True
         except:
             st.write(' ')
             flag = False
 
         # df = parser.convert_all(cdf_files)
-        if flag == True and st.button('Show Pattern'):
+        if st.button('Show Pattern'):
             cdf_files = [os.path.join(path, f) for f in os.listdir(path) if f.endswith('.cdf')]
             st.write(cdf_files)
             show_pattern(cdf_files, error, value)

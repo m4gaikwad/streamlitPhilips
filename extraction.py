@@ -4,7 +4,7 @@ import streamlit as st
 import glob
 
 extension = "zip"
-
+flag = False
 
 def extract_zip(path, folders):
     complete_path = []
@@ -34,3 +34,4 @@ def extract_zip(path, folders):
 
     else:
         st.write(' ')
+        return False
