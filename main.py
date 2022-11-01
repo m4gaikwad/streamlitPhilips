@@ -85,10 +85,14 @@ def home():
             state.FILE_UPLOADER_KEY = str(randint(1000, 9999))
 
         # st.markdown('## \U0001F4C2 Upload CDF files')
-        st.markdown('## \U0001F5CE Upload CDF Files')
+        #st.markdown('## \U0001F5CE Upload CDF Files')
+        st.markdown('Select Directory containing CDF files')
+        dir_path = st.text_input('Type Complete Path till Test1 Directory')
+        dir_list = os.listdir(dir_path)
+
 
         # Create a list for holding 5 files
-        data = st.file_uploader('', accept_multiple_files=True, type='cdf', key=state.FILE_UPLOADER_KEY)
+        #data = st.file_uploader('', accept_multiple_files=True, type='cdf', key=state.FILE_UPLOADER_KEY)
 
         # Check if only 5 files are uploaded
         # if len(data) > MAX_FILES:
@@ -103,7 +107,8 @@ def home():
         submit = st.button('Submit')
 
         if submit:
-            show_pattern(data, error, value)
+            #show_pattern(data, error, value)
+            show_pattern(dir_list,error,value)
 
     elif select_menu == 'Directory':
         st.markdown('## Copy Paste The Root Folder Path')
